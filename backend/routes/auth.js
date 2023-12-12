@@ -1,5 +1,6 @@
 const express = require("express");
 const User = require("../models/User");
+const fetchuser=require("../middleware/fetchuser");
 const router = express.Router();
 var bcrypt = require("bcryptjs");
 var jwt = require("jsonwebtoken");
@@ -91,6 +92,22 @@ router.post(
       }
     }
   );
+
+
+  //ROUTE 3:Get logged user details using :Post "/api/auth/getuser".login required
+router.post(
+  "/getuser",fetchuser,async(req, res) => {
+try {
+    const userId = req.user.id;
+    const user = await User.findById(userId).select("-password");
+  res.send(user)
+
+} catch (e) {
+console.log(e);
+res.status(500).json("Some error occured");
+}
+}
+);
 
 
 

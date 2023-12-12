@@ -1,36 +1,50 @@
 import React, { useEffect } from 'react'
-import { useNavigate,Link } from 'react-router-dom'
+import { useNavigate} from 'react-router-dom'
 
 const Welcome = () => {
+  
+
+  const fetchuser=async ()=>{
+    const response = await fetch("http://localhost:5000/api/auth/getuser", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "auth-token":localStorage.getItem('token')
+            },
+      });
+      const json=await response.json();
+      localStorage.setItem('name',json.name)
+      
+      
+    }
+    
+
     let navigate=useNavigate();
     useEffect(()=>{
-        if(localStorage.getItem('token'))
+        if(!localStorage.getItem('token'))
         {
+          navigate('/login')
            
         }
-        else{
-            navigate('/login')
-        }
+        fetchuser();
+        
         // eslint-disable-next-line 
     },[navigate])
 
     const handleclick=()=>
     {
       localStorage.removeItem('token');
+      localStorage.removeItem('name');
       navigate('/login')
     }
     
   return (
     <div>
-      Welcome
-      {!localStorage.getItem('token')?<form className='d-flex'>
-      <Link className="btn btn-primary mx-1"  to="/login">Login</Link>
-      <Link className="btn btn-primary mx-1"  to="/signup">Signup</Link>
-      </form >:<>
-      <i className="fa-solid fa-user"  style={{color: "#1160e8",}} />
-      <button className="btn btn-primary mx-4 " onClick={handleclick}>Signout</button>
+      Welcome {localStorage.getItem('name')}
+     <>
+      <button className="btn btn-danger mx-4 " onClick={handleclick}>Signout</button>
       </>
-    }
+    
     </div>
     
   )
