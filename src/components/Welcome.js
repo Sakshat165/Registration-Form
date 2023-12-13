@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate} from 'react-router-dom'
 
 const Welcome = () => {
-  
+  const[name,setName]=useState("")
 
   const fetchuser=async ()=>{
     const response = await fetch("http://localhost:5000/api/auth/getuser", {
@@ -13,7 +13,7 @@ const Welcome = () => {
             },
       });
       const json=await response.json();
-      localStorage.setItem('name',json.name)
+      setName(json.name)
       
       
     }
@@ -40,7 +40,7 @@ const Welcome = () => {
     
   return (
     <div>
-      Welcome {localStorage.getItem('name')}
+      Welcome {name}
      <>
       <button className="btn btn-danger mx-4 " onClick={handleclick}>Signout</button>
       </>
